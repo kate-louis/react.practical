@@ -221,7 +221,182 @@ export const getFriendsWithAgeShowLimit = createSelector(
 ### 몇 가지 리덕스 사용 팁
 
 ### redux-saga를 이용한 비동기 액션 처리1
+**리덕스에서 비동기 처리하기**
+* redux-thunk
+-비동기 로직이 간단할 때 사용  
+-가장 간단하게 시작할 수 있다
+* redux-observable
+-비동기 코드가 많을 때 사용  
+-RxJS 패키지를 기반으로 만들어졌다
+* redux-saga
+-비동기 코드가 많을 때 사용  
+-제너레이터를 적극적으로 활용한다  
+-테스트 코드 작성  이 쉽다
 
+**좋아요 기능 추가**
+```
+// 1번
+export const actions = {
+  requestLike: timeline => ({
+    type: types.REQUEST_LIKE,
+    timeline
+  }),
+  addLike: (timelineId, value) => ({
+    type: types.ADD_LIKE,
+    timelineId,
+    value
+  }),
+  setLoading: isLoading => ({
+    type: types.SET_LOADING,
+    isLoading,
+  }),
+};
+
+// 2번
+export default function* () {
+  yield all([takeLeading(types.REQUEST_LIKE, fetchData)]);
+}
+
+// 3번
+export default* fetchData(action) {
+  yield put(actions.setLoading(true)); // 로딩을 true로 변경
+  yield put(actions.addLike(action.timeline.id, 1)); // 4번 
+  yield call(callApiLike); // api 호출
+  yield put(actions.setLoading(false)); // 로딩을 false로 변경
+}
+```
+* 기능 추가
+-좋아요 버튼을 누르면 비동기 처리를 하고  
+-비동기 처리 중에는 로딩 중을 보여주고   
+-비동기 처리가 끝나면 좋아요 숫자가 올라감
+* 1번) 3가지 액션을 추가
+-requestLike는 어떤 타임라인에 like를 request 하는지 나타냄(saga쪽에서만 사용)
+-addLike는 value 만큼 like 카운트 증가
+-setLoading은 isLoading으로 로딩 상태인지를 표현
+* 2번) all과 takeLeading은 사가에서 제공하는 함수
+-all 안에 배열, 배열 안에서 운하는 것들을 여러개 나열
+-takeLeading의 첫번쨰 매개변수로 액션을 추가,  
+이 액션이 발생했을 때 두번째 있는 함수를 실행
+-takeLeading effect가 아직 처리되고 있는 액션이 있을 때,  
+그 사이에 들어온 액션을 무시가 된다  
+그 처음에 들어온 액션에 우선순위를 높게 줘서 처리를 한다
+-takeLatest는 뒤에 들어온 것에 우선순위를 더 높게 해준다
+* 3번) put, call, all 모두 사가에서 부수효과라고 불리움
+-put은 리덕스 액션을 발생시키는 것   
+-call effect는 뒤에 있는 함수를 실행
+* 4번) api를 호출하기 전에 positive 방식으로 like 카운트를 하나 증가
+(API 성공했다고 가정하고 미리 반영하는 방식)
+
+***redux-saga***
+* redux-saga의 부수효과 함수는 해야 할 일을 설명하는 자바스크립트 객체를 반환한다
+* 반환된 객체는 yield를 호출했을 때 사가 미들웨어에게 전달이 된다
+* 리덕스의 미들웨어 쪽에서 사가 미들웨어가 돌아가고 있 다
+* 사가 미들웨어는 부수효과 객체가 설명하는 일을 한 다음에 그 결과와 함께 실행 흐름을 다시 제너레이터 쪽으로 넘겨준다
 ### 제너레이터 이해하기
+```
+function* f1() { // 제너레이터 함수
+  console.log('f1-1');
+  yield 10;
+  console.log('f1-2');
+  yield 20;
+  console.log('f1-3');
+  yield 'finished';
+}
+const gen = f1(); // 제너레이터 객체가 반환
+console.log(gen.next());
+console.log(gen.next());
+console.log(gen.next());
+// f1-1
+// {value: 10, done: false}
+// f1-2
+// {value: 20, done: false}
+// f1-3
+//  {value: 'finished', done: false}
+console.log(gen[Symbol.iterator]() === gen);
+// true
+```
+* 다음 조건을 만족하는 객체는 반복자(iterator)이다
+-next 메서드를 갖고 있다  
+-next 메서드는 value와 done 속성값을 가진 객체를 반환한다  
+-done 속성값은 작업이 끝났을 때 참이 된다
+
+* 다음 조건을 만족하면 반복 가능(iterable)한 객체다
+-Symbol.iterator 속성값으로 함수를 갖고 있다  
+-해당 함수를 호출하면 반복자(iterator)를 반복한다
+
+* 제너레이터 객체는 iterator 이면서 iterable 이다
+* 배열도 iterable 이다
+* iterable을 만족하면 자바스크립트의 몇가지 기능을 사용할 수 있다
+-for of 함수
+-spread operator 전개 연산자
+* 제너레이터는 실행을 멈출 수 있다,  
+실행을 멈추고 실행 권한을 외부로 다시 준다,
+외부에서 어떤 신호과 왔을 때 다시 실행을 제기할 수도 있다 
+* 실행을 멈추고 재개할 수 있다는 특성 때문에 제너레이터는 협업이 가능합니다
+* next의 인수로 입력한 값은 yield의 반환값이 된다
+
+```
+// 우리가 작성한 사가함수
+function* minsu() {
+  const myMsgList = [
+    '안녕 나는 민수야',
+    '만나서 반가워',
+    '내일 영화 볼래?',
+    '시간 안 되니?',
+    '내일모레는 어때?',
+  ];
+  for(const msg of myMsgList) {
+    console.log('수지', yield msg);
+  }
+}
+// 사가 미들웨어
+function suji() {
+  const myMsgList = ['', '안녕 나는 수지야', '그래 반가워', '...'];
+  const gen = minsu();
+  for(const msg of myMsgList) {
+    console.log('민수: ', gen.next(msg).value);
+  }
+}
+```
+![Alt text](https://i.stack.imgur.com/HrMk4.jpg)
 
 ### redux-saga를 이용한 비동기 액션 처리2
+```
+function* loginFlow() {
+  while(true) {
+    const { id, password } = yield take(types.LOGIN); // 1번
+    const userInfo = yield call(callApiLogin, id, password);
+    yield put(types.SET_USER_INFO, userInfo);
+    yield take(types.LOGOUT);
+    yield call(callApiLogout, id);
+    yield put(types.SET_USER_INFO, null);
+  }
+}
+
+// 2번
+export function* fetchData(action) {
+  yield put(actions.setLoading(true));
+  yield put(actions.addLike(action.timeline.id, 1));
+  yield put(actions.setValue('error', ''));
+  try {
+    yield call(callApiLike);
+  } catch(error) {
+    yield put(actions.setValue('error', error));
+    yield put(actions.addLike(action.timeline.id, -1));
+  }
+  yield put(actions.setLoading(false));
+}
+
+// 3번
+export default function* () {
+  yield all([
+    takeLeading(types.REQUEST_LIKE, fetchData),
+    debounce(500, types.TRY_SET_TEXT, trySetText),
+  ]);
+}
+```
+* 1번)  take라는 effect는 매개변수로 입력한 액션을 기다립니다, 로그인 액션이 발생하면 액션 객체가 반환이 된다
+* 2번) 예외처리
+* 3번) debounce 기능, 짧은 시간에 같은 이벤트가 반복해서 발생할 때  
+모든 이벤트를 처리하기 부담스러울 수 있는데 이때 디바운스를 사용하면 좋음,  
+디바운스는 같은 함수를 연속해서 호출될 때 첫번째 또는 마지막 호출만 실행하는 기능을 말한다
