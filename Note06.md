@@ -1,7 +1,7 @@
 ### 리덕스 소개
 * 컴포넌트 코드로부터 상태 관리 코드를 분리할 수 있다
 * 미들웨어를 활용한 다양한 기능 추가  
-(데이터를 처리하는 중간 과정에서 어떤 로직을 넣어서 필요한 기능을 추가)
+(데이터를 처리하는 중간 과정에서 어떤 로직을 넣어서 필요한 기능을 추가)  
 -강력한 미들웨어 라이브러리 (ex. redux-saga)  
 -로컬 스토리지에 데이터 저장하기 및 불러오기
 * SSR 시 데이터 전달이 간편하다
@@ -114,7 +114,7 @@ store.dispatch({ type ... });
 
 ***주의사항***
 * 객체를 가르킬 때에는 객체의 레퍼런스가 아니라 고유한 아이디값을 이용하는게 좋음
-* 리듀서는 순수 함수로 작성해야 한다, 순수함수가 되려면 부수 효과가 없어야 한다
+* 리듀서는 순수 함수로 작성해야 한다, 순수함수가 되려면 부수 효과가 없어야 한다  
 부수 효과라는 것은 외부 상태를 변경하는 건데 eg) 서버 API 호출, 랜덤 함수 사용, 타임 함수 사용 
 
 ***스토어***
@@ -222,13 +222,13 @@ export const getFriendsWithAgeShowLimit = createSelector(
 
 ### redux-saga를 이용한 비동기 액션 처리1
 **리덕스에서 비동기 처리하기**
-* redux-thunk
+* redux-thunk  
 -비동기 로직이 간단할 때 사용  
 -가장 간단하게 시작할 수 있다
-* redux-observable
+* redux-observable  
 -비동기 코드가 많을 때 사용  
 -RxJS 패키지를 기반으로 만들어졌다
-* redux-saga
+* redux-saga  
 -비동기 코드가 많을 때 사용  
 -제너레이터를 적극적으로 활용한다  
 -테스트 코드 작성  이 쉽다
@@ -265,26 +265,26 @@ export default* fetchData(action) {
   yield put(actions.setLoading(false)); // 로딩을 false로 변경
 }
 ```
-* 기능 추가
+* 기능 추가  
 -좋아요 버튼을 누르면 비동기 처리를 하고  
 -비동기 처리 중에는 로딩 중을 보여주고   
 -비동기 처리가 끝나면 좋아요 숫자가 올라감
-* 1번) 3가지 액션을 추가
--requestLike는 어떤 타임라인에 like를 request 하는지 나타냄(saga쪽에서만 사용)
--addLike는 value 만큼 like 카운트 증가
+* 1번) 3가지 액션을 추가  
+-requestLike는 어떤 타임라인에 like를 request 하는지 나타냄(saga쪽에서만 사용)  
+-addLike는 value 만큼 like 카운트 증가  
 -setLoading은 isLoading으로 로딩 상태인지를 표현
-* 2번) all과 takeLeading은 사가에서 제공하는 함수
--all 안에 배열, 배열 안에서 운하는 것들을 여러개 나열
--takeLeading의 첫번쨰 매개변수로 액션을 추가,  
-이 액션이 발생했을 때 두번째 있는 함수를 실행
--takeLeading effect가 아직 처리되고 있는 액션이 있을 때,  
-그 사이에 들어온 액션을 무시가 된다  
-그 처음에 들어온 액션에 우선순위를 높게 줘서 처리를 한다
+* 2번) all과 takeLeading은 사가에서 제공하는 함수  
+-all 안에 배열, 배열 안에서 운하는 것들을 여러개 나열  
+-takeLeading의 첫번쨰 매개변수로 액션을 추가,    
+이 액션이 발생했을 때 두번째 있는 함수를 실행  
+-takeLeading effect가 아직 처리되고 있는 액션이 있을 때,    
+그 사이에 들어온 액션을 무시가 된다   
+그 처음에 들어온 액션에 우선순위를 높게 줘서 처리를 한다  
 -takeLatest는 뒤에 들어온 것에 우선순위를 더 높게 해준다
-* 3번) put, call, all 모두 사가에서 부수효과라고 불리움
+* 3번) put, call, all 모두 사가에서 부수효과라고 불리움  
 -put은 리덕스 액션을 발생시키는 것   
--call effect는 뒤에 있는 함수를 실행
-* 4번) api를 호출하기 전에 positive 방식으로 like 카운트를 하나 증가
+-call effect는 뒤에 있는 함수를 실행  
+* 4번) api를 호출하기 전에 positive 방식으로 like 카운트를 하나 증가  
 (API 성공했다고 가정하고 미리 반영하는 방식)
 
 ***redux-saga***
@@ -315,20 +315,20 @@ console.log(gen.next());
 console.log(gen[Symbol.iterator]() === gen);
 // true
 ```
-* 다음 조건을 만족하는 객체는 반복자(iterator)이다
+* 다음 조건을 만족하는 객체는 반복자(iterator)이다  
 -next 메서드를 갖고 있다  
 -next 메서드는 value와 done 속성값을 가진 객체를 반환한다  
--done 속성값은 작업이 끝났을 때 참이 된다
+-done 속성값은 작업이 끝났을 때 참이 된다  
 
-* 다음 조건을 만족하면 반복 가능(iterable)한 객체다
--Symbol.iterator 속성값으로 함수를 갖고 있다  
+* 다음 조건을 만족하면 반복 가능(iterable)한 객체다  
+-Symbol.iterator 속성값으로 함수를 갖고 있다    
 -해당 함수를 호출하면 반복자(iterator)를 반복한다
 
 * 제너레이터 객체는 iterator 이면서 iterable 이다
 * 배열도 iterable 이다
-* iterable을 만족하면 자바스크립트의 몇가지 기능을 사용할 수 있다
--for of 함수
--spread operator 전개 연산자
+* iterable을 만족하면 자바스크립트의 몇가지 기능을 사용할 수 있다  
+-for of 함수  
+-spread operator 전개 연산자  
 * 제너레이터는 실행을 멈출 수 있다,  
 실행을 멈추고 실행 권한을 외부로 다시 준다,
 외부에서 어떤 신호과 왔을 때 다시 실행을 제기할 수도 있다 
