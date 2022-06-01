@@ -23,8 +23,12 @@ axios({
 
 // 3번
 const { resultCode, resultMessage } = response.data;
+
+// 4번
+http://localhost:3001/user/search?keyword=u
 ```
 * 1번) = 표시는 optional 이 값을 입력하지 않아도 된다는 의미
 * 2번) 사용자 인증을 위해서 토큰을 쿠키로 저장해서 왔다갔다 할껀데 그게 동작하려면 이 옵션을 주어야 합니다
 * 3번) api가 응답하는 데이터에는 항상 resultCode와 resultMessage가 들어있다  
 정상적일 때는 resultCode가 0으로 오고, 에러가 날 때는 0보다 작은값이 온다
+* 4번) autoCompletes 데이터 구조 확인, 데이터의 배열이 들어있음

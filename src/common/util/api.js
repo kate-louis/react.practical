@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_HOST } from '../constant';
-import { message, Result } from 'antd';
+import { message } from 'antd';
 
 /**
  * 
@@ -24,7 +24,7 @@ export function callApi({ method = 'get', url, params, data }) {
       message.error(resultMessage);
     }
     return {
-      isSuccess: resultCode === resultCode.Success,
+      isSuccess: resultCode === ResultCode.Success,
       data: response.data.data,
       resultCode,
       resultMessage,

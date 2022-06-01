@@ -5,7 +5,7 @@ import {
 } from '../../common/redux-helper';
 
 // enum CarmelCase convenstion
-export const Types = {
+export const Types =   {
   Setvalue: 'search/SetValue',
   FetchAutoComplete: 'search/FetchAutoComplete'
 }
