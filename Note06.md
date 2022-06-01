@@ -130,10 +130,19 @@ const [, forceUpdate] = useReducer(v => v + 1, 0);
 
 // 2번 리덕스에서 timelines 데이터를 가져오기
  * let prevTimelines = store.getState().timeline.timelines;
+
+// 3번 
+useEffect(() => {
+  const unsubscribe = store.subscribe(() => forceUpdate());
+  return () => unsubscribe();
+}, []); 
  ```
  * 1번) [forceUpdate와 같은 것이 있습니까?](https://ko.reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate)
  * 2번) [Store 메서드 getState()](https://redux.js.org/api/store)  
  애플리케이션의 현재 상태 트리를 반환합니다. 스토어의 리듀서가 마지막으로 반환한 값과 동일합니다.
+ * 3번) [Store 메서드 subscribe(listener)](https://redux.js.org/api/store)    
+ 변경사항에 대한 리스너를 추가합니다. 리스너는 액션이 보내져서 상태 트리의 일부가 변경될 수 있을 때마다 호출됩니다. 콜백 안에서 현재 상태 트리를 읽으려면 getState()를 호출하면 됩니다.
+ * 의존성 배열로 빈 배열을 입력하면 컴포넌트가 생성될 때만 부수 효과 함수가 호출되고, 컴포넌트가 사라질 때만 반환된 함수가 호출된다.
  * 이렇게 이전 데이터를 관리하고 데이터가 변경됐을 떄만 컴포넌트가 렌더링 되게 하는 것이 react-redux의 중요한 역할 중의 한 가지
 
 ### react-redux 사용하기
@@ -156,7 +165,7 @@ const dispatch = useDispatch();
 * 기존의 강제 업데이트 forceUpdate 와 상태값 비교 로직 코드가 필요 없음 
 * 2번) 리덕스에서 데이터를 가져올 때는 useSelector 훅을 사용,    
 선택자 함수는 리덕스의 상태값이 매개변수로 넘어오고 사용하려는 데이터를 가져오면 된다
-* useSelector 훅은 리덕스에서 액션이 처리가 되면 여기서 반환하는 갓의 이전값을 기억했다가 이 값이 변경되었을 때 이 컴포넌트를 다시 렌더링 해줍니다
+* useSelector 훅은 리덕스에서 액션이 처리가 되면 여기서 반환하는 값의 이전값을 기억했다가 이 값이 변경되었을 때 이 컴포넌트를 다시 렌더링 해줍니다
 * 3번) 여러 개의 상태값을 가져오고 싶을 때  
 -배열 또는 객체 반환  
 -매번 새로 생성으로 불필요한 렌더링 단점이 있음  
@@ -210,15 +219,46 @@ export const getFriendsWithAgeShowLimit = createSelector(
   [getFriendsWithAgeLimit, getShowLimit],
   (friendsWithAgeLimit, showLimit) => friendsWithAgeLimit.slice(0, showLimit),
 );
+
+// 1번
+const selectValue = createSelector(
+  state => state.values.value1,
+  state => state.values.value2,
+  (value1, value2) => value1 + value2
+)
 ```
 * reselect 라이브러리를 사용하면 이러한 연산을 효율적으로 처리할 수 있다,  
 메모이제이션 기능 지원
 * reselect 라이브러리는 선택자 함수를 컴포넌트 코드에서 분리해주는 장점이 있음
 * createSelector 함수를 이용해서 선택자 함수를 만들면 메모이제이션 기능이 동작을 한다
-* friends와 ageLimit 값이 변경되지 않았다면 이전 반환된 값을 그대로 사용
+* 매개변수 friends와 ageLimit 값이 변경됐을 때만 실행, 변경되지 않았다면 이전 반환된 값을 그대로 사용
 * 데이터를 가공하는 연산이 컴포넌트 코드에 없고 selector.js 파일로 분리
-
+* 1번) [Reselect](https://github.com/reduxjs/reselect)   
+createSelector(...inputSelectors | [inputSelectors], resultFunc, selectorOptions?)  
+Accepts one or more "input selectors" (either as separate arguments or a single array), a single "output selector" / "result function", and an optional options object, and generates a memoized selector function.
+ 
 ### 몇 가지 리덕스 사용 팁
+```
+// redux-helper.js  
+export function createSetValueAction(type) {
+  return (key, value) => ({ type, key, value });
+}
+
+export function setValueReducer(state, action) {
+  state[action.key] = action.value;
+}
+
+// state.js
+const SET_VALUE = 'SET_VALUE';
+export const setValue = createSetValueAction(SET_VALUE);
+const reducer = createReducer(INITIAL_STATE, {
+  [SET_VALUE]: setValueReducer,
+});
+
+// FriendMain.js
+<NumberSelect onChange={v => dispatch(setValue('ageLimit, v))} />
+```
+* 리듀서에서 간편하게 할당할 때
 
 ### redux-saga를 이용한 비동기 액션 처리1
 **리덕스에서 비동기 처리하기**
@@ -395,7 +435,7 @@ export default function* () {
   ]);
 }
 ```
-* 1번)  take라는 effect는 매개변수로 입력한 액션을 기다립니다, 로그인 액션이 발생하면 액션 객체가 반환이 된다
+* 1번) take라는 effect는 매개변수로 입력한 액션을 기다립니다, 로그인 액션이 발생하면 액션 객체가 반환이 된다
 * 2번) 예외처리
 * 3번) debounce 기능, 짧은 시간에 같은 이벤트가 반복해서 발생할 때  
 모든 이벤트를 처리하기 부담스러울 수 있는데 이때 디바운스를 사용하면 좋음,  
