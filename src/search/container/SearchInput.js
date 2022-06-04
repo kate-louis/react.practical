@@ -4,7 +4,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions } from '../state';
 import { actions as userActions } from '../../user/state';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function SearchInput() {
   const keyword = useSelector(state => state.search.keyword);

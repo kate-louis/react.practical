@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { PageHeader, Col, Row, Descriptions, Typography } from 'antd';
+import { PageHeader, Col, Row, Descriptions, Typography, Space, Spin } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { actions } from '../state';
+import { actions, Types } from '../state';
+import useFetchInfo from '../../common/hook/useFetchInfo';
 
 export default function User() {
   const history = useNavigate();
@@ -12,17 +13,23 @@ export default function User() {
   const { name } = useParams();
   useEffect(() => {
     dispatch(actions.fetchUser(name));
-  }, [name]);
+  }, [dispatch, name]);
   console.log(name);
 
-  const isFetched = true;
+  //const isFetched = true;
+  const { isFetched, isSlow } = useFetchInfo(Types.FetchUser);
 
   return (
     <Row justify="center">
       <Col xs={24} md={20} lg={14}>
         <PageHeader
           onBack={() => { history(-1) }}
-          title="사용자 정보"
+          title={
+            <Space>
+              사용자 정보
+              { isSlow && <Spin size="small" />}
+            </Space>
+          }
         >
           {user && (
             <Descriptions layout="vertical" bordered column={1}>
