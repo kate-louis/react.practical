@@ -97,3 +97,30 @@ const INITIAL_STATE = {
 * fetchUser 사가함수에서는 /auth/user 라는 API 호출하면 서버에서는 쿠키를 이용해서 사용자 이름을 내려준다
 * fetchUser는 App 컴포넌트에서 사용, App이 마운트 됐을 때 액션이 발생, dispatch는 일반적으로 변하지 않는다
 
+### 프로젝트 마무리하기
+```
+// 1번 (search/saga.js)
+function* fetchAllHistory(_, page) {
+  const { isSuccess, data } = yield call(callApi, {
+    url: '/history',
+    params: {page}
+  });
+  ...
+}
+
+// 2번 (search/index.js)
+export const actions = {
+  ...
+  fetchAllHistory: () => ({ type: Types.FetchAllHistory, [FETCH_PAGE]: 0 }),
+}
+```
+* User 컴포넌트가 언마운트될 때 initialize 액션을 날린다,   
+즉 유저페이지를 벗어날 때 모든 상태값을 초기화
+* 1번) 페이지네이션은 숙제
+-API로 페이지네이션은 구현되어 있음  
+-페이지네이션 API http://localhost:3001/history?page=0  
+뒤에 파라미터 없이 호출하면 첫번째 페이지만 반환함
+-fetchAllHistory의 page 번호는 자동으로 하나씩 증가함
+* 2번) 페이지 초기화 하고 싶을 때
+* 스크롤을 하면 자동으로 다음 페이지를 받아오는 기능을 무한 스크롤이라 부르는데,  
+무한 스크롤을 구현할 때 Intersection Observer API를 이용하면 됨
