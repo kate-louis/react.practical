@@ -7,7 +7,8 @@ import {
 // enum CarmelCase convenstion
 export const Types =   {
   Setvalue: 'search/SetValue',
-  FetchAutoComplete: 'search/FetchAutoComplete'
+  FetchAutoComplete: 'search/FetchAutoComplete',
+  FetchAllHistory: 'user/FetchAllHistory',
 }
 
 export const actions = {
@@ -16,11 +17,13 @@ export const actions = {
     type: Types.FetchAutoComplete,
     keyword,
   }),
+  fetchAllHistory: () => ({ type: Types.FetchAllHistory }),
 }
 
 const INITIAL_STATE = {
   keyword: '',
   autoCompletes: [],
+  history: [],
 }
 const reducer = createReducer(INITIAL_STATE, {
   [Types.Setvalue]: setValueReducer,

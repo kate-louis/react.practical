@@ -87,3 +87,9 @@ const INITIAL_STATE = {
 ### 태그 정보 수정하기
 * FetchLabel 컴포넌트의 역할은 api 응답이 느리면 로딩을 보여주는 것
 * 소속이나 태그 모두 positive 방식으로 동작을 하기 때문에 api 응답이 안 와도 바로바로 값을 바꿔주고 있다
+
+### 수정 내역 구현하기
+* 히스토리 API http://localhost:3001/history
+
+### 인증 화면 만들기
+

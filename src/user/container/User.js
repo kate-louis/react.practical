@@ -13,10 +13,12 @@ export default function User() {
   const history = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
+  const userHistory = useSelector(state => state.user.userHistory);
 
   const { name } = useParams();
   useEffect(() => {
     dispatch(actions.fetchUser(name));
+    dispatch(actions.fetchUserHistory(name));
   }, [dispatch, name]);
   console.log(name);
 
@@ -64,7 +66,7 @@ export default function User() {
                 <TagList />
               </Descriptions.Item>
               <Descriptions.Item label="수정 내역">
-                <History />
+                <History items={userHistory} />
               </Descriptions.Item>
             </Descriptions>
           )}
