@@ -7,13 +7,20 @@ import { SettingFilled } from '@ant-design/icons';
  * @param {object} param
  * @param {() => void} param.logout
  */
-export default function Setting({ logout  }) {
+export default function Setting({ logout }) {
+  const items = [
+    { label: '로그아웃', key: 'logout' }
+  ];
+  function onMenuClick(event) {
+    const { key } = event;
+    if(key === 'logout') {
+      logout();
+    }
+  }
   return (
     <Dropdown 
       overlay={
-        <Menu>
-          <Menu.Item onClick={logout}>로그아웃</Menu.Item>
-        </Menu>
+        <Menu items={items} onClick={onMenuClick} />
       } 
       trigger={['click']}
       placement="bottomRight"

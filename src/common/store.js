@@ -6,11 +6,14 @@ import searchSaga from '../search/state/saga';
 import userReducer from '../user/state';
 import userSaga from '../user/state/saga';
 import commonReducer from '../common/state';
+import authReducer from '../auth/state';
+import authSaga from '../auth/state/saga';
 
 const reducer = combineReducers({
   common: commonReducer,
   search: searchReducer,
   user: userReducer,
+  auth: authReducer,
 });
 // const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__?.());
 const sagaMiddleware = createSagaMiddleware();
@@ -21,7 +24,7 @@ const store = createStore(
 );
 
 function* rootSaga() {
-  yield all([searchSaga(), userSaga()]);
+  yield all([searchSaga(), userSaga(), authSaga()]);
 }
 sagaMiddleware.run(rootSaga);
 export default store;

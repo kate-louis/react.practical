@@ -94,4 +94,6 @@ const INITIAL_STATE = {
 ### 인증 화면 만들기
 
 ### 인증 API 호출하기
+* fetchUser 사가함수에서는 /auth/user 라는 API 호출하면 서버에서는 쿠키를 이용해서 사용자 이름을 내려준다
+* fetchUser는 App 컴포넌트에서 사용, App이 마운트 됐을 때 액션이 발생, dispatch는 일반적으로 변하지 않는다
 

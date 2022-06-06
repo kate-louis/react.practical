@@ -22,7 +22,7 @@ function* fetchAllHistory() {
   }
 }
 
-export default function* sagaSearch() {
+export default function* searchSaga() {
   yield all([
     // takeEvery(Types.FetchAutoComplete, fetchAutoComplete),
     takeEvery(

@@ -8,8 +8,10 @@ import Department from './Department';
 import TagList from './TagList';
 import History from '../../common/component/History';
 import FetchLabel from '../component/FetchLabel';
+import useNeedLogin from '../../common/hook/useNeedLogin';
 
 export default function User() {
+  useNeedLogin();
   const history = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
