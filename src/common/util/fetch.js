@@ -18,9 +18,13 @@ function makeCheckSlowSaga(actionType, fetchKey) {
   };
 }
 
+// const apiCache = new lruCache({
+//   max: 500,
+//   maxAge: 1000 * 60 * 2,
+// });
 const apiCache = new lruCache({
   max: 500,
-  maxAge: 1000 * 60 * 2,
+  ttl: 1000 * 60 * 2,
 });
 
 const SAGA_CALL_TYPE = call(() => {}).type;
@@ -155,6 +159,6 @@ export function deleteApiCache(actionType) {
     keys = keys.filter(key => key.includes(actionType));
   }
   for (const key of keys) {
-    apiCache.del(key);
+    apiCache.delete(key);
   }
 }

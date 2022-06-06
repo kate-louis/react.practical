@@ -74,3 +74,11 @@ const INITIAL_STATE = {
 ### SPA 초기 로딩 처리하기
 * loading.io/css/
 * 로딩은 컴포넌트가 마운트 된 다음에 제거
+
+### 사용자 정보 수정하기
+* redux-saga
+-takeEvery: 모든 클릭이 실행됨  
+-takeLatest: 연속된 클릭 방지 (마지막 것만 실행해줌)  
+-takeLeading: 연속된 클릭 방지 (첫번째 것만 실행해줌)  
+-throttle: 마지막 함수가 호출된 후 일정 시간이 지나기 전에 다시 호출되지 않도록 함  
+-debounce: 연이어 호출되는 함수들 중 마지막 함수(또는 제일 처음)만 호출

@@ -13,7 +13,7 @@ function* fetchAutoComplete({ keyword }) {
   }
 }
 
-export default function* () {
+export default function* sagaSearch() {
   yield all([
     // takeEvery(Types.FetchAutoComplete, fetchAutoComplete),
     takeEvery(

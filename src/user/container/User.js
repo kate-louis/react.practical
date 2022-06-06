@@ -4,6 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, Types } from '../state';
 import useFetchInfo from '../../common/hook/useFetchInfo';
+import Department from './Department';
+import TagList from './TagList';
+import History from '../../common/component/History';
 
 export default function User() {
   const history = useNavigate();
@@ -37,13 +40,13 @@ export default function User() {
                 <Typography.Text>{user.name}</Typography.Text>
               </Descriptions.Item>
               <Descriptions.Item label="소속">
-                {user.department}
+                <Department />
               </Descriptions.Item>
               <Descriptions.Item label="태그">
-                {user.tag}
+                <TagList />
               </Descriptions.Item>
               <Descriptions.Item label="수정 내역">
-                수정 내역
+                <History />
               </Descriptions.Item>
             </Descriptions>
           )}
