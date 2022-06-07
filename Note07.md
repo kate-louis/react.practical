@@ -1,43 +1,89 @@
 ### 프로젝트 소개
 * https://github.com/landvibe/inflearn-react-project
+* server 폴더를 npm install 후 npm start를 하여 서버를 띄운다
+* 패스워드는 아무거나 입력해도 로그인 된다
+* 로딩처리
+-처음 Downloading은 정적 파일을 받아오는 시간  
+html이나 자바스크립트와 같은 파일을 받아와야 렌더링을 할 수 있으니까  
+-사용자 정보 옆에 로딩바는 사용자 정보를 가져오기 위해서 api 호출 후 오래 걸릴때 로딩을 보여줌
 * 디자인 시스템으로 ant.design 사용
 
 ### 프로젝트 설정하기
+```
+// 1번
+// jsconfig.json
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "commonjs",
+    "target": "es2020",
+    "checkJs": true
+  },
+  "exclude": ["node_modules"]
+}
+```
+* 1번) vs code에서 타입스크립트를 이용해서  타입 체크를 해준다
+* package.json
+-axios: api 호출을 위해서    
+-diff: 두개의 문자열을 비교하기 위해서 사용
+* 폴더 구조
+-화면에 페이지 별로 폴더를 만들어서 관리  
+-common / search / user / auth
 * 타입 정의
 -prop types 런타임에 타입 체크
 -js doc 컴파일 타임에 타입 체크, 타입 오류를 바로바로 확인 할수 있다
 
 ### 서버 API 호출하기
 ```
+// search/state/index.js
+// 1번
+export const Types = {
+  ...,
+  FetchAutoComplete: 'search/FetchAutoComplete', // 2번
+}
+
+// 3번 (.env.development)
+REACT_APP_API_HOST=http://localhost:3001
+
+// 4번 (common/constant.js)
+export const API_HOST = process.env.REACT_APP_API_HOST;
+
+
 // util/api.js
 
-// 1번
+// 5번
 @param {object=} param.params
 
-// 2번
+// 6번
 axios({
   withCredentials: true,
 }).then(response => {
   ...
 });
 
-// 3번
+// 7번
 const { resultCode, resultMessage } = response.data;
 
-// 4번
+// 8번
 http://localhost:3001/user/search?keyword=u
 ```
-* 1번) = 표시는 optional 이 값을 입력하지 않아도 된다는 의미
-* 2번) 사용자 인증을 위해서 토큰을 쿠키로 저장해서 왔다갔다 할껀데 그게 동작하려면 이 옵션을 주어야 합니다
-* 3번) api가 응답하는 데이터에는 항상 resultCode와 resultMessage가 들어있다  
+* 1번) enum 형식으로 사용할 변수는 카멜 케이스로 작성
+* 2번) 모든 API 통신을 위한 액션은 Fetch라는 이름으로 시 작
+* 3번) API 주소는 환경변수로 관리 .env.development 파일과 .env.production 파일
+* 4번) API 주소가 필요할 때 사용
+* 5번) = 표시는 optional 이 값을 입력하지 않아도 된다는 의미
+* 6번) 사용자 인증을 위해서 토큰을 쿠키로 저장해서 왔다갔다 할껀데 그게 동작하려면 이 옵션을 주어야 합니다
+* 7번) api가 응답하는 데이터에는 항상 resultCode와 resultMessage가 들어있다  
 정상적일 때는 resultCode가 0으로 오고, 에러가 날 때는 0보다 작은값이 온다
-* 4번) autoCompletes 데이터 구조 확인, 데이터의 배열이 들어있음
+* 8번) autoCompletes 데이터 구조 확인, 데이터의 배열이 들어있음
 
 ### 사용자 페이지 구현하기
+* 직접 진입하는 경우 user 객체가 undefined 라서 문제가 된다  
+사용자 정보는 url에 사용자 이름이 있기 때문에 그 정보로 api와 통신하면 된다
 
 ### makeFetchSaga로 API 통신 상탯값 관리하기
 ```
-// 1번 (saga.js)
+// 1번 (saga.js) 
 export default function() {
   yield all([
     takeEvery(
@@ -63,9 +109,9 @@ const INITIAL_STATE = {
 ```
 사가 미들웨어 <-> makeFetchSaga <-> 사가 함수
 * 1번) makeFetchSaga (제너레이터)
--모든 Fetch Saga는 makeFetchSaga라는 함수를 호출하도록 할겁니다
--canCache 값이 true 이면 정해진 시간동안 해당 API가 응답하는 값을 캐싱하고 
-캐싱된 데이터가 있으면 액션이 발생했을 때 API를 호출하는게 아니라 그 cache를 활용할겁니다.
+-모든 Fetch Saga는 makeFetchSaga라는 함수를 호출하도록 할겁니다  
+-canCache 값이 true 이면 정해진 시간동안 해당 API가 응답하는 값을 캐싱하고  
+캐싱된 데이터가 있으면 액션이 발생했을 때 API를 호출하는게 아니라 그 cache를 활용할겁니다.  
 -fetch 상태값을 관리를 해줌 통신 진행중인지, 통신상태가 느린지 등등
 * 2번) 상태값이 필요할 때 
 * 3번) 이 모든 데이터는 각 액션마다 어떤 상태인지 나타낸다
