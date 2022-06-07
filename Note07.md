@@ -2,7 +2,7 @@
 * https://github.com/landvibe/inflearn-react-project
 * server 폴더를 npm install 후 npm start를 하여 서버를 띄운다
 * 패스워드는 아무거나 입력해도 로그인 된다
-* 로딩처리
+* 로딩처리  
 -처음 Downloading은 정적 파일을 받아오는 시간  
 html이나 자바스크립트와 같은 파일을 받아와야 렌더링을 할 수 있으니까  
 -사용자 정보 옆에 로딩바는 사용자 정보를 가져오기 위해서 api 호출 후 오래 걸릴때 로딩을 보여줌
@@ -23,13 +23,13 @@ html이나 자바스크립트와 같은 파일을 받아와야 렌더링을 할 
 }
 ```
 * 1번) vs code에서 타입스크립트를 이용해서  타입 체크를 해준다
-* package.json
+* package.json  
 -axios: api 호출을 위해서    
 -diff: 두개의 문자열을 비교하기 위해서 사용
-* 폴더 구조
+* 폴더 구조  
 -화면에 페이지 별로 폴더를 만들어서 관리  
 -common / search / user / auth
-* 타입 정의
+* 타입 정의  
 -prop types 런타임에 타입 체크
 -js doc 컴파일 타임에 타입 체크, 타입 오류를 바로바로 확인 할수 있다
 
@@ -108,7 +108,7 @@ const INITIAL_STATE = {
 }
 ```
 사가 미들웨어 <-> makeFetchSaga <-> 사가 함수
-* 1번) makeFetchSaga (제너레이터)
+* 1번) makeFetchSaga (제너레이터)  
 -모든 Fetch Saga는 makeFetchSaga라는 함수를 호출하도록 할겁니다  
 -canCache 값이 true 이면 정해진 시간동안 해당 API가 응답하는 값을 캐싱하고  
 캐싱된 데이터가 있으면 액션이 발생했을 때 API를 호출하는게 아니라 그 cache를 활용할겁니다.  
@@ -123,7 +123,7 @@ const INITIAL_STATE = {
 * 로딩은 컴포넌트가 마운트 된 다음에 제거
 
 ### 사용자 정보 수정하기
-* redux-saga
+* redux-saga  
 -takeEvery: 모든 클릭이 실행됨  
 -takeLatest: 연속된 클릭 방지 (마지막 것만 실행해줌)  
 -takeLeading: 연속된 클릭 방지 (첫번째 것만 실행해줌)  
@@ -162,7 +162,7 @@ export const actions = {
 ```
 * User 컴포넌트가 언마운트될 때 initialize 액션을 날린다,   
 즉 유저페이지를 벗어날 때 모든 상태값을 초기화
-* 1번) 페이지네이션은 숙제
+* 1번) 페이지네이션은 숙제  
 -API로 페이지네이션은 구현되어 있음  
 -페이지네이션 API http://localhost:3001/history?page=0  
 뒤에 파라미터 없이 호출하면 첫번째 페이지만 반환함
